@@ -1,0 +1,5 @@
+"Rule: ocaml: ml & cmi -> cmx & o (%=tour )": "2ô\156$eu¦Ç\140»êS.º\136þ"
+"Rule: ocaml: ml -> cmo & cmi (%=tour )": "\011\145[¯|Ð¿FauY\153¿\019ì\145"
+"Resource: /Users/asrinivasan/Code/ocaml/learn_ml/tour.ml": "£Á\144Ôm\148©-[î¯Ùº#oO"
+"Rule: ocaml dependencies ml (%=tour )": "Æ\006\029\030ö[à\024%_\154vôê\146\002"
+"Rule: ocaml: cmx* & o* -> native (%=tour )": "\017\137 ½\017&q\156½3\132Û¬\019£*"
