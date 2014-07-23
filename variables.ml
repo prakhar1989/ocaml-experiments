@@ -18,10 +18,35 @@ let upcase_first_entry line =
 let increments = [ (fun x -> x + 1); (fun x -> x + 2) ]
 let incs = List.map increments ~f:(fun g -> g 5)
 
+(* currying *)
+let abs_diff x y = abs (x - y)
+let distance_from_three = abs_diff 3
+
+(* recursion *)
+let rec find_first_stutter list = 
+  match list with
+  | [] -> None
+  | [_] -> None
+  | x :: y :: tl ->
+      if x = y then Some x 
+      else find_first_stutter (y :: tl)
+
+(* operators *)
+let (+!) (x1,y1) (x2,y2) = (x1 + x2, y1 + y2)
+let (x,y) = (3,4) +! (6,8)
+
+(* |> operator which does x f = f x  - awesome for chaining *)
+let path = "/usr/bin:/usr/local/bin:/bin:/sbin:/bin"
+let uniq_paths = 
+  String.split ~on:':' path
+  |> List.dedup ~compare:String.compare
+
 (* helper *)
 let print_int_list list = 
   List.iter list (printf "%d ")
 
-(* main function *)
 let () = 
   print_int_list incs
+
+let () =
+  List.iter ~f:print_endline uniq_paths
