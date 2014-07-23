@@ -3,8 +3,11 @@
 ocamlfind ocamldep -syntax camlp4o -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -package core -modules variables.ml > variables.ml.depends
 # Target: variables.cmo, tags: { annot, bin_annot, byte, compile, debug, extension:cmo, extension:ml, file:variables.cmo, file:variables.ml, implem, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
 ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -annot -bin-annot -short-paths -thread -syntax camlp4o -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -package core -o variables.cmo variables.ml
-# Target: variables.cmx, tags: { annot, bin_annot, compile, debug, extension:cmx, extension:ml, file:variables.cmx, file:variables.ml, implem, native, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlopt -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -annot -bin-annot -short-paths -thread -syntax camlp4o -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -package core -o variables.cmx variables.ml
-# Target: variables.native, tags: { annot, bin_annot, debug, dont_link_with, extension:native, file:variables.native, link, native, ocaml, package(bin_prot.syntax), package(core), package(sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax), program, quiet, short_paths, syntax(camlp4o), thread }
-ocamlfind ocamlopt -linkpkg -g -thread -syntax camlp4o -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -package core variables.cmx -o variables.native
-# Compilation successful.
++ ocamlfind ocamlc -c -w A-4-33-40-41-42-43-34-44 -strict-sequence -g -annot -bin-annot -short-paths -thread -syntax camlp4o -package bin_prot.syntax -package sexplib.syntax,comparelib.syntax,fieldslib.syntax,variantslib.syntax -package core -o variables.cmo variables.ml
+File "variables.ml", line 23, characters 2-11:
+Warning 6: labels were omitted in the application of this function.
+File "variables.ml", line 23, characters 2-31:
+Error: This expression has type unit but an expression was expected of type
+         string
+Command exited with code 2.
+# Compilation unsuccessful.
