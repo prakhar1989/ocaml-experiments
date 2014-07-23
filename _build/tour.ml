@@ -56,10 +56,53 @@ let rect = Rectangle { lower_left={x=5.;y=6.}; height=3.; width=7.}
 let is_inside_scene point scene = 
   List.exists scene ~f:(fun el -> is_inside_scene_element point el)
 
+(* imperative programming *)
+let numbers = [| 1; 2; 3; 4 |]
+
+(* mutable record fields *)
+type running_sum = 
+  {
+    mutable sum: float;
+    mutable sum_sq: float;
+    mutable samples: int;
+  }
+
+let mean rsum = rsum.sum /. float rsum.samples
+let stdev rsum = 
+  sqrt (rsum.sum_sq /. float rsum.samples
+          -. (rsum.sum /. float rsum.samples) ** 2.)
+
+let create () = { sum = 0.; sum_sq = 0.; samples = 0 }
+let update rsum x = 
+   rsum.samples <- rsum.samples + 1;
+   rsum.sum     <- rsum.sum     +. x;
+   rsum.sum_sq  <- rsum.sum_sq  +. x *. x
+
+(* refs *)
+let x = ref 0
+
+let sum_imperative list =
+  let sum = ref 0 in
+  List.iter list ~f:(fun x -> sum := !sum + x);
+  !sum
+
+let permute array = 
+  let length = Array.length array in 
+  for i = 0 to length - 2 do
+    let j = i + 1 + Random.int (length - i - 1) in 
+    let tmp = array.(i) in 
+    array.(i) <- array.(j);
+    array.(j) <- tmp
+  done
+
+(* main function *)
 let () =
   let p = { x = 3.3 ; y = 4.5 } in
-    printf "Circle in point: %B\n" (is_inside_scene_element p circle);;
-
-  let p = { x = 3.3 ; y = 4.5 } in
     printf "All in point: %B\n" (is_inside_scene p [circle; line; rect]);;
+
+  let rsum = create () in
+    List.iter [1.;3.;2.;-7.;4.;5.] ~f:(fun x -> update rsum x);
+    printf "Sum: %F\n" (rsum.sum);;
+  
+  printf "Reference X: %d\n" (!x + 1);;
 
