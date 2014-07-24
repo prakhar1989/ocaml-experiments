@@ -41,12 +41,19 @@ let uniq_paths =
   String.split ~on:':' path
   |> List.dedup ~compare:String.compare
 
-(* helper *)
-let print_int_list list = 
-  List.iter list (printf "%d ")
+(* function keyword with pattern matching *)
+let some_or_zero default = function 
+  | Some x -> x
+  | None -> default
 
-let () = 
-  print_int_list incs
+(* labelled arguments *)
+let ratio ~num ~denom = float num /. float denom
+
+(* optional arguments *)
+let concat ?(sep="") x y = x ^ sep ^ y
 
 let () =
   List.iter ~f:print_endline uniq_paths
+
+let () =
+  printf "%f\n" (ratio ~num: 8 ~denom: 6)
