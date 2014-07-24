@@ -1,20 +1,5 @@
 open Core.Std
 
-let ints = [1;2;3]
-let more_ints = 4 :: 5 :: 6 :: []
-
-let rec sum list = 
-  match list with 
-  | [] -> 0
-  | hd :: tl -> hd + sum tl
-
-let rec drop_value list value =
-  match list with
-  | [] -> []
-  | hd :: tl -> 
-    let new_tl = drop_value tl value in
-    if hd = value then new_tl else hd :: new_tl
-
 let max_length header rows = 
   let lengths list = List.map ~f:String.length list in
   List.fold rows
@@ -54,4 +39,3 @@ let () =
      ["OCaml"   ; "Xavier Leroy"     ; "1996"] ;
   ] in
   print_endline (render_table header rows)
-  
