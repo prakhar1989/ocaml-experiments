@@ -9,3 +9,4 @@
 *.cmxa
 *.native
 _build/*
+*/_build/*

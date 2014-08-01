@@ -1,3 +1,5 @@
+open Core.Std
+
 (* Exercise 1 *)
 (* 1a. Make it so that that x equals 42, by adding 22 to 20 *)
 let x = 22 + 20
@@ -87,21 +89,9 @@ let rec_to_tup {name=name; married=married; age=age}: (string * bool * int) =
 (* 2e. Why doesn't the expression below type check? What small change
  * can you make to it so that it does *)
 
-(* 
 type employer = {name:string; est_year:int };;
-let g : employee = tup_to_rec ("Greg", 12, true);;
+let g : employee = tup_to_rec ("Greg", true, 12);;
 g.name = "Ada";;
-print_string g.name;;
-*)
-
-
-
-(* 2f. What does the following expression evaluate to? Why?*)
-(* 1.0 == 1.0;; *)
-(* Moral of the story : Don't use == unless you know what this is for *)
-
-
-
 
 (* Options *)
 (* Exercise 3 *)
@@ -109,24 +99,24 @@ print_string g.name;;
 (* 3a. Write a function to return the smaller of two int options, or None
  * if both are None. If exactly one argument is None, return the other. *)
 
-(* 
 let min_option (x: int option) (y: int option) : int option =
-*)
-
-
-
+  match (x, y) with
+  | (None, None) -> None
+  | (a, None) -> a
+  | (None, b) -> b
+  | (a, b) -> if a < b then a else b
 
 	
 (* 3b. Write a function that returns the integer buried in the argument
  * or None otherwise *) 
 
-(* 
 let get_option (x: int option option option option) : int option =
-*)
-
-
-
-
+  match x with 
+  | None                        -> None
+  | Some None                   -> None
+  | Some (Some None)            -> None
+  | Some (Some (Some None))     -> None
+  | Some (Some (Some (Some a))) -> Some a
 
 (* What's the pattern? How can we factor out similar code? *)
 (* 3c. Write a higher-order function for binary operations on options.
@@ -134,51 +124,38 @@ let get_option (x: int option option option option) : int option =
  * and the other argument is None, function should return (Some x) *)
 (* What is calc_option's function signature? *)
 
-(* 
 let calc_option (f: int -> int -> int) (x: int option) (y: int option) : int option =
-*)
-
-
-
-
+  match (x, y) with
+  | (None, None) -> None
+  | (a, None) | (None, a) -> a
+  | (Some a, Some b) -> Some (f a b)
 
 (* 3d. Now rewrite min_option and max_option using the higher-order function. 
    The built-in functions min and max may be useful *)
-
-(* 
 let min_option_2 (x: int option) (y: int option) : int option =
-*)
-
-
+  calc_option min x y
 
 (* Can we use this in other ways? *)
 (* 3e. Write a function to return the boolean AND of two bool options,
  * or None if both are None. If exactly one is None, return the other. *)
-
-(* 
 let and_option (x:bool option) (y: bool option) : bool option =
-*)
-
-
+  match (x, y) with 
+  | (None, None) -> None
+  | (a, None) | (None, a) -> a
+  | (Some a, Some b) -> Some (a && b)
 
 (* 4. Compute the GCD for two integers using Euclid's recursion
  * http://en.wikipedia.org/wiki/Greatest_common_divisor *)
-
-(* 
-let gcd (x : int) (y : int) : int = 
-*)
-
+let rec gcd (x : int) (y : int) : int = 
+  match (x, y) with
+  | (a, 0) -> a
+  | (a, b) -> gcd b (a mod b)
 
 (* 5. Compute the McCarthy 91 function as shown in 
  * http://en.wikipedia.org/wiki/McCarthy_91_function
  *)
-
-(* 
-let mccarthy (x : int) : int = failwith "Unimplemented"
-*)
-
-
-
+let rec mccarthy (n : int) : int = 
+  if n > 100 then (n - 10) else mccarthy (mccarthy (n + 11))
 
 (* 6. Compute the square root of x using Heron of Alexandria's
  * algorithm (circa 100 AD).  We start with an initial (poor)
@@ -187,17 +164,12 @@ let mccarthy (x : int) : int = failwith "Unimplemented"
  * real answer.  The improvement is achieved by averaging the
  * current guess with x/guess.  The answer is accurate to within
  * delta = 0.0001. *)
-
-(* 
 let squareRoot (x : float) : float =
-*)
-
-
-
-
-
-
-
-
-
-
+  let delta = 0.0001 in
+  let rec calc_guess guess = 
+    let new_guess = (guess +. (x /. guess)) /. 2. in
+    if Float.abs (new_guess -. guess) < delta 
+    then new_guess else calc_guess new_guess
+  in
+  calc_guess 1.0
+;;
