@@ -12,7 +12,7 @@ let rec zip (xs: int list) (ys: int list) : (int * int ) list option =
 (* insert x in a sorted list *)
 let rec insert (x: int) (xs: int list) : int list = 
   match xs with 
-  | [] -> []
+  | [] -> [x]
   | hd :: tl -> if x < hd then x :: xs else hd :: insert x tl
 
 (* insertion sort *)
