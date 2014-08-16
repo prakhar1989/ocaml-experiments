@@ -22,6 +22,41 @@ let debug s = print_string s; flush_all()
 
 (* *** DO NOT CHANGE DEFINITIONS ABOVE THIS LINE! *** *)
 
+(* A simple reduce function *)
+let rec reduce (xs: 'a list) (f: 'a -> 'b -> 'b) (init: 'b): 'b = 
+  match xs with
+  | [] -> init
+  | hd :: tl -> reduce tl f (f hd init)
+;;
+
+(* A simple map function *)
+let rec map (xs: 'a list) (f: 'a -> 'b): 'b list = 
+  match xs with
+  | [] -> []
+  | hd :: tl -> (f hd) :: (map tl f)
+;;
+
+(* A simple filter function *)
+let rec filter (xs: 'a list) (f: 'a -> bool): 'a list = 
+  match xs with
+  | [] -> []
+  | hd :: tl -> 
+      if f hd then hd :: filter tl f
+      else filter tl f
+;;
+
+(* Getter functions  - Should movie be a record? *)
+let get_movie_gross (m: movie): float = 
+  let _, _, gross, _ = m in
+  gross
+;;
+
+let get_movie_year (m: movie): int = 
+  let _, _, _, year = m in 
+  year
+;;
+
+let length (xs: 'a list): int = reduce xs (fun _ acc -> acc + 1) 0;;
 
 (* find the average gross of the movies in the list                  *)
 (* hint: you may need to use functions float_of_int and int_of_float *)
@@ -29,23 +64,40 @@ let debug s = print_string s; flush_all()
 (*       type them in to ocaml toplevel                              *)
 (* hint: recall the difference between +. and + also 0. and 0        *)
 let average (movies : movie list) : float = 
-  failwith "average unimplemented"
+  let total = reduce movies (fun mov accum -> accum +. get_movie_gross mov) 0. in
+  let len = float_of_int (length movies) in
+  total /. len
 ;;
 
 (* return a list containing only the movies from the given decade *)
 (* call bad_arg if n is not 20, 30, ..., 90, 00, 10               *)
 let decade (n:int) (ms:movie list) : movie list =  
-  failwith "decade unimplemented"
+  if not (n mod 10 = 0)
+  then bad_arg "Not a valid decade"
+  else 
+    let year_in_decade dec year : bool = 
+      let decade = dec + if dec < 20 then 2000 else 1900 in
+      year - decade >= 0 && year - decade < 10
+    in
+    filter ms (fun mov -> year_in_decade n (get_movie_year mov))
 ;;
 
 (* return the first n items from the list *)
 let rec take (n:int) (l:'a list)  : 'a list =
-  failwith "take unimplemented"
+  match l with 
+  | [] -> []
+  | hd :: tl -> 
+      if n = 0 then [] 
+      else hd :: take (n - 1) tl
 ;;
 
 (* return everything but the first n items from the list *)
 let rec drop (n:int) (l:'a list)  : 'a list =
-  failwith "drop unimplemented"
+  match l with
+  | [] -> []
+  | hd :: tl -> 
+      if n = 0 then hd :: drop n tl
+      else drop (n - 1) tl
 ;;
 
 (* return a list [x1; x2; ...; xn] with the same elements as the input l
@@ -132,16 +184,40 @@ let data4 : movie list = [
   ("Harry Potter and the Deathly Hallows Part 2","WB",381.01,2011)
 ];;
 
+let data5 : movie list = [
+  ("The Lord of the Rings: The Return of the King","NL",377.85,2003);
+  ("The Hunger Games","LGF",374.32,2012);
+  ("The Dark Knight","WB",533.34,2008);
+  ("Harry Potter and the Deathly Hallows Part 2","WB",381.01,2011);
+  ("Scary 2","WB",381.01,1989);
+  ("Scary 1","WB",134.12,1985);
+];;
+
 (* Assertion Testing *)
 
+let get_average (xs: float list): float = 
+  let len = length xs in
+  let total = reduce xs (fun x y -> x +. y) 0. in
+  total /. (float_of_int len)
+;;
+
+
 (* Uncomment the following when you are ready to test your take routine *)
-(*
 assert(take 0 data4 = []);;
 assert(take 1 data1 = data1);;
 assert(take 2 data4 = data2);;
 assert(take 5 data2 = data2);;
 assert(take 2 data2 = data2);;
-*)
+
+assert(average data1 = get_average [377.85]);;
+assert(average data2 = get_average [377.85; 374.32]);;
+assert(average data3 = get_average [317.57555; 310.67674; 309.306177]);;
+assert(average data4 = get_average [377.85; 374.32; 533.34; 381.01]);;
+
+assert(length (decade 10 data5) = 2);;
+assert(length (decade 00 data5) = 2);;
+assert(length (decade 80 data5) = 2);;
+assert(length (decade 90 data5) = 0);;
 
 (* Additional Testing Infrastructure *)
 
@@ -159,3 +235,6 @@ let check (i:int) (tests:(unit -> 'a) list) : 'a =
     failwith ("bad test" ^ string_of_int i)
 ;;
 
+(* debugging stuff 
+debug (string_of_float (average data4))
+*)
