@@ -6,30 +6,19 @@
    uncomment the code and make a small fix so that it does type check *)
 
 (* Problem 1a 
- * Did not typecheck because:   
-
-
+ * Did not typecheck because: This is treated as a tuple and not a list
  *)
-(*
-let prob1a : int list = [1, 2, 3] ;;
-*)
+let prob1a : int list = [1; 2; 3]
 
 (* Problem 1b 
- * Did not typecheck because:
-
+ * Did not typecheck because: string * int list is parsed as string * (int list)
  *)
-(*
-let prob1b : string * int list = [("CS", 50); ("CS", 51)] ;;
-*)
+let prob1b : (string * int) list = [("CS", 50); ("CS", 51)]
 
 (* Problem 1c
- * Did not typecheck because:
-
-
+ * Did not typecheck because: cannot cons a list to a list of floats.
  *)
-(*
-let prob1c : float list = [2.0; 3.0] :: [4.0; 5.0] ;;
-*)
+let prob1c : float list list = [2.0; 3.0] :: [4.0; 5.0] :: []
 
 (*************)
 (* PROBLEM 2 *)
@@ -52,40 +41,39 @@ let prob1c : float list = [2.0; 3.0] :: [4.0; 5.0] ;;
  *)
 
 (*>* Problem 2a *>*)
-(*  
-let prob2a : (float * (string * int) option list) list =
-  ???
+let prob2a : (float * (string * int) option list) list = [(0., [Some ("hello", 1)])]
 ;;
-*)
 
 (*>* Problem 2b *>*)
-(*
 (* a student is a (name, age option) pair *)
-type student = (string, int option);;
+type student = { name: string; age: int option } ;;
 let prob2b : (student list option * int) list = 
-  ???
+  let x = { name = "foo"; age = Some 10 } in
+  [(Some (x :: []), 10)]
 ;;
-*)
-
 
 (*>* Problem 2c *>*)
-(*
 let prob2c : (int * int -> int) * (float -> float -> unit) * bool  =
-  ???
+  let f1 t = let (x, y) = t in x * y in
+  let f2 x y = 
+    let k = x +. y in 
+    print_float k
+  in
+  (f1, f2, true)
 ;;
-*)
 
 (* Fill in ??? with something that makes these typecheck: *)
 (*>* Problem 2d *>*)
-(*
 let prob2d =
   let rec foo bar =
     match bar with
-    | (a, (b, c)) :: xs -> if a then (b + c + (foo xs)) else foo xs
+    | (a, (b, c)) :: xs -> 
+        if a 
+        then (b + c + (foo xs)) 
+        else foo xs
     | _ -> 0
-  in foo ???
+  in foo ((true, (10, 20)) :: [])
 ;;
-*)
 
 (*************)
 (* PROBLEM 3 *)
@@ -108,8 +96,17 @@ let rec zardoz f ls acc =
  * Write some assert statements
  * to check that your function is doing the same thing as the original.  
  * Use the COS 326 style guide. *)
-let rec myzardoz f ls acc = failwith "unimplemented";;
+let rec myzardoz (f:'a -> 'b -> 'b) (ls: 'a list) (acc: 'b): 'b = 
+  match ls with
+  | [] -> acc
+  | hd :: tl -> f hd (myzardoz f tl acc)
+;;
 
+let add x y = x + y;;
+let prod x y = x * y;;
+let ls = [10; 20; 30];;
+assert(myzardoz add ls 0 = zardoz add ls 0);;
+assert(myzardoz prod ls 1 = zardoz prod ls 1);;
 
 (*************)
 (* PROBLEM 4 *)
@@ -120,40 +117,19 @@ let rec myzardoz f ls acc = failwith "unimplemented";;
 (***************************************)
 
 (* 
-
 If l is any list of integers, the look-and-say list of s is obtained by 
 reading off adjacent groups of identical elements in s. For example, the 
 look-and-say list of
+l = [2; 2; 2] is [3; 2] because l is exactly "three twos." 
 
-l = [2; 2; 2]
-
-is
-
-[3; 2]
-
-because l is exactly "three twos." Similarly, the look-and-say sequence of
-
-l = [1; 2; 2]
-
-is
-
-[1; 1; 2; 2]
-
-because l is exactly "one ones, then two twos."
+Similarly, the look-and-say sequence of
+l = [1; 2; 2] is [1; 1; 2; 2] because l is exactly "one ones, then two twos."
 
 We will use the term run to mean a maximal length sublist of a list with 
 all equal elements. For example,
 
-[1; 1; 1] and [5]
-
-are both runs of the list
-
-[1; 1; 1; 5; 2]
-
-but
-
+[1; 1; 1] and [5] are both runs of the list [1; 1; 1; 5; 2] but
 [1; 1] and [5; 2] and [1; 2]
-
 are not: 
 
 [1; 1] is not maximal

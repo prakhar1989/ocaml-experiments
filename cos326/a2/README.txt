@@ -2,11 +2,6 @@
 Optional: Explain any difficulties you had with this assignment or any
 parts that are incomplete.  Suggestions on how this assignment could
 be improved to help students learn more are welcome:
-
-
-
-
-
 =======================================================================
 For each of the following questions, 
 
